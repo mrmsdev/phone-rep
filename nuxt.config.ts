@@ -5,8 +5,17 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
   modules: [
     '@nuxt/image',
-    '@nuxtjs/google-fonts'
+    '@nuxtjs/google-fonts',
+    '@sidebase/nuxt-auth'
   ],
+  auth: {
+    globalAppMiddleware: false,
+    baseURL: 'http://localhost:3000/api/auth',
+    provider: {
+      type: 'authjs',
+      defaultProvider: 'credentials'
+    }
+  },
   googleFonts: {
     families: {
       Outfit: [300, 400, 500, 600, 700]
