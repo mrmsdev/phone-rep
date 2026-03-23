@@ -1,12 +1,11 @@
 import { createRouter, defineEventHandler, useBase, readBody, createError } from 'h3'
-import { getServerSession } from '#auth'
 import { prisma } from '../../utils/prisma'
 const router = createRouter()
 
 // Middleware to protect all /api/admin routes
-router.use('/', defineEventHandler(async (event) => {
-    const session = await getServerSession(event)
-    if (!session || session.user?.role !== 'ADMIN') {
+router.use('/', defineEventHandler((event) => {
+    const user = event.context.user
+    if (!user || user.role !== 'ADMIN') {
         throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
     }
 }))
@@ -20,12 +19,12 @@ router.post('/categories', defineEventHandler(async (event) => {
     return await prisma.category.create({ data: { name: body.name, slug: body.slug } })
 }))
 router.put('/categories/:id', defineEventHandler(async (event) => {
-    const id = Number(event.context.params.id)
+    const id = Number(event.context.params!.id)
     const body = await readBody(event)
     return await prisma.category.update({ where: { id }, data: body })
 }))
 router.delete('/categories/:id', defineEventHandler(async (event) => {
-    const id = Number(event.context.params.id)
+    const id = Number(event.context.params!.id)
     return await prisma.category.delete({ where: { id } })
 }))
 
@@ -43,14 +42,14 @@ router.post('/products', defineEventHandler(async (event) => {
     })
 }))
 router.put('/products/:id', defineEventHandler(async (event) => {
-    const id = Number(event.context.params.id)
+    const id = Number(event.context.params!.id)
     const body = await readBody(event)
     if (body.price) body.price = Number(body.price)
     if (body.categoryId) body.categoryId = Number(body.categoryId)
     return await prisma.product.update({ where: { id }, data: body })
 }))
 router.delete('/products/:id', defineEventHandler(async (event) => {
-    const id = Number(event.context.params.id)
+    const id = Number(event.context.params!.id)
     return await prisma.product.delete({ where: { id } })
 }))
 

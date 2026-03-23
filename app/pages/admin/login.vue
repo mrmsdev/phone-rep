@@ -17,35 +17,26 @@
 </template>
 
 <script setup lang="ts">
-const { signIn } = useAuth()
 const email = ref('')
 const password = ref('')
 const loading = ref(false)
 const error = ref('')
 
-definePageMeta({
-  auth: {
-    unauthenticatedOnly: true,
-    navigateAuthenticatedTo: '/admin'
-  }
-})
-
 async function handleLogin() {
   loading.value = true
   error.value = ''
   try {
-    const res = await signIn('credentials', {
-      email: email.value,
-      password: password.value,
-      redirect: false
+    await $fetch('/api/auth/login', {
+      method: 'POST',
+      body: { email: email.value, password: password.value }
     })
-    if (res?.error) {
+    navigateTo('/admin')
+  } catch (err: any) {
+    if (err?.response?.status === 401 || err?.response?.status === 400) {
       error.value = 'Invalid email or password'
     } else {
-      navigateTo('/admin')
+      error.value = 'An error occurred during sign in.'
     }
-  } catch (err: any) {
-    error.value = 'An error occurred during sign in.'
   } finally {
     loading.value = false
   }

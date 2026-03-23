@@ -58,7 +58,12 @@ definePageMeta({
   middleware: 'auth'
 })
 
-const { data, signOut } = useAuth()
+const { data } = await useFetch('/api/auth/user')
+
+async function signOut() {
+  await $fetch('/api/auth/logout', { method: 'POST' })
+  navigateTo('/admin/login')
+}
 
 const { data: categories, refresh: refreshCategories } = useFetch<any[]>('/api/admin/categories')
 const { data: products, refresh: refreshProducts } = useFetch<any[]>('/api/admin/products')
