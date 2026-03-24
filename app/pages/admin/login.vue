@@ -17,6 +17,10 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+  layout: false
+})
+
 const email = ref('')
 const password = ref('')
 const loading = ref(false)
@@ -58,6 +62,7 @@ async function handleLogin() {
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
   width: 100%;
   max-width: 400px;
+  color: #333;
 }
 .login-form h2 {
   margin-top: 0;
@@ -76,6 +81,8 @@ async function handleLogin() {
   padding: 0.5rem;
   border: 1px solid #ccc;
   border-radius: 4px;
+  background: #fff;
+  color: #333;
 }
 button {
   width: 100%;

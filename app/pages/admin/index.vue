@@ -1,13 +1,5 @@
 <template>
   <div class="admin-dashboard">
-    <header>
-      <h1>Admin Dashboard</h1>
-      <div class="user-info">
-        <span>Welcome, {{ data?.user?.name }}</span>
-        <button @click="signOut({ callbackUrl: '/' })">Logout</button>
-      </div>
-    </header>
-
     <main>
       <section class="admin-section">
         <h2>Categories</h2>
@@ -55,15 +47,9 @@
 
 <script setup lang="ts">
 definePageMeta({
-  middleware: 'auth'
+  middleware: 'auth',
+  layout: 'admin'
 })
-
-const { data } = await useFetch('/api/auth/user')
-
-async function signOut() {
-  await $fetch('/api/auth/logout', { method: 'POST' })
-  navigateTo('/admin/login')
-}
 
 const { data: categories, refresh: refreshCategories } = useFetch<any[]>('/api/admin/categories')
 const { data: products, refresh: refreshProducts } = useFetch<any[]>('/api/admin/products')
@@ -116,22 +102,8 @@ async function deleteProduct(id: number) {
 
 <style scoped>
 .admin-dashboard {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 2rem;
-  font-family: sans-serif;
-}
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 2px solid #eaeaea;
-  padding-bottom: 1rem;
-  margin-bottom: 2rem;
-}
-.user-info span {
-  margin-right: 1rem;
-  font-weight: bold;
+  padding: 1rem 0;
+  font-family: inherit;
 }
 .user-info button {
   padding: 0.5rem 1rem;
