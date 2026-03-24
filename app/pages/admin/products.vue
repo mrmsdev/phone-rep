@@ -29,15 +29,27 @@
           </select>
         </div>
         <div class="form-group">
-          <label>Image URL</label>
-          <input v-model="newProduct.image" placeholder="https://example.com/image.jpg" />
+          <label>Product Images</label>
+          <div class="upload-wrapper">
+            <input type="file" @change="handleFileChange" accept="image/*" class="file-input" id="file-upload" multiple />
+            <label for="file-upload" class="file-label">
+              <span v-if="!isUploading">Click to upload images (can select multiple)</span>
+              <span v-else>Uploading... {{ uploadProgress }}%</span>
+            </label>
+            <div v-if="newProduct.images.length" class="images-preview-grid">
+              <div v-for="(img, index) in newProduct.images" :key="index" class="upload-preview">
+                <img :src="img" />
+                <button @click.prevent="removeImage(index)" class="btn-remove-img" type="button">×</button>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="form-group full-width">
           <label>Description</label>
           <textarea v-model="newProduct.description" placeholder="A brief description of the product..."></textarea>
         </div>
         <div class="form-actions">
-          <button type="submit" :disabled="isSubmitting" class="btn-submit">
+          <button type="submit" :disabled="isSubmitting || isUploading" class="btn-submit">
             {{ isSubmitting ? 'Creating...' : 'Create Product' }}
           </button>
         </div>
@@ -61,7 +73,7 @@
               <td class="product-cell">
                 <div class="product-info">
                   <div class="product-image-mini">
-                    <img :src="prod.image || '/images/placeholder.png'" :alt="prod.title" />
+                    <img :src="prod.images?.[0] || '/images/placeholder.png'" :alt="prod.title" />
                   </div>
                   <div class="product-text">
                     <span class="product-title">{{ prod.title }}</span>
@@ -104,14 +116,68 @@ const { data: products, refresh: refreshProducts, pending } = useFetch<any[]>('/
 
 const showAddForm = ref(false)
 const isSubmitting = ref(false)
+const isUploading = ref(false)
+const uploadProgress = ref(0)
+const config = useRuntimeConfig()
 
 const newProduct = ref({
   title: '',
   price: '',
   description: '',
-  image: '',
+  images: [] as string[],
   categoryId: null as number | null
 })
+
+function removeImage(index: number) {
+  newProduct.value.images.splice(index, 1)
+}
+
+async function handleFileChange(event: Event) {
+  const target = event.target as HTMLInputElement
+  const files = target.files
+  if (!files || files.length === 0) return
+
+  for (let i = 0; i < files.length; i++) {
+    const file = files.item(i)
+    if (file) await uploadImage(file)
+  }
+}
+
+async function uploadImage(file: File) {
+  const cloudName = config.public.cloudinaryCloudName
+  const uploadPreset = config.public.cloudinaryUploadPreset
+
+  if (!cloudName || !uploadPreset || cloudName === 'your-cloud-name') {
+    alert('Cloudinary is not configured. Please set NUXT_PUBLIC_CLOUDINARY_CLOUD_NAME and NUXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET in .env')
+    return
+  }
+
+  isUploading.value = true
+  uploadProgress.value = 0
+
+  const formData = new FormData()
+  formData.append('file', file as any)
+  formData.append('upload_preset', uploadPreset)
+
+  try {
+    const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+      method: 'POST',
+      body: formData
+    })
+
+    const data = await response.json()
+    if (data.secure_url) {
+      // Use optimization parameters for fast loading
+      newProduct.value.images.push(data.secure_url.replace('/upload/', '/upload/f_auto,q_auto/'))
+    } else {
+      throw new Error(data.error?.message || 'Upload failed')
+    }
+  } catch (err: any) {
+    alert('Upload failed: ' + err.message)
+  } finally {
+    isUploading.value = false
+  }
+}
 
 async function createProduct() {
   isSubmitting.value = true
@@ -120,7 +186,7 @@ async function createProduct() {
       method: 'POST',
       body: newProduct.value
     })
-    newProduct.value = { title: '', price: '', description: '', image: '', categoryId: null }
+    newProduct.value = { title: '', price: '', description: '', images: [], categoryId: null }
     showAddForm.value = false
     refreshProducts()
   } catch (err) {
@@ -225,6 +291,71 @@ async function deleteProduct(id: number) {
 .form-group textarea {
   min-height: 100px;
   resize: vertical;
+}
+
+.upload-wrapper {
+  position: relative;
+}
+
+.file-input {
+  opacity: 0;
+  width: 0.1px;
+  height: 0.1px;
+  position: absolute;
+}
+
+.file-label {
+  display: block;
+  padding: 0.75rem;
+  background: #f8f9fa;
+  border: 2px dashed #ddd;
+  border-radius: 6px;
+  text-align: center;
+  cursor: pointer;
+  color: #666;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.file-label:hover {
+  background: #f1f1f1;
+  border-color: #0070f3;
+}
+
+.images-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.upload-preview {
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+
+.upload-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid #eee;
+}
+
+.btn-remove-img {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #ff4d4f;
+  color: #fff;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .form-actions {

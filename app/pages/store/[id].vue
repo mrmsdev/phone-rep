@@ -5,7 +5,7 @@
       <nav class="breadcrumb">
         <NuxtLink to="/store" class="breadcrumb-link">Store</NuxtLink>
         <span class="breadcrumb-separator">/</span>
-        <span class="breadcrumb-current">{{ product.categoryName }}</span>
+        <span class="breadcrumb-current">{{ product.category?.name || 'Accessories' }}</span>
         <span class="breadcrumb-separator">/</span>
         <span class="breadcrumb-current">{{ product.title }}</span>
       </nav>
@@ -14,7 +14,20 @@
         <!-- Image Gallery -->
         <div class="product-gallery glass-panel">
           <div class="main-image">
-            <span class="product-placeholder">{{ product.imageIcon || '📦' }}</span>
+            <template v-if="product.images && product.images.length">
+              <img :src="product.images[activeImageIndex]" :alt="product.title" class="gallery-main" />
+            </template>
+            <span v-else class="product-placeholder">{{ product.imageIcon || '📦' }}</span>
+          </div>
+          <div class="thumbnail-grid" v-if="product.images && product.images.length > 1">
+            <button 
+              v-for="(img, index) in product.images" 
+              :key="index" 
+              :class="['thumbnail-btn', { active: Number(activeImageIndex) === Number(index) }]"
+              @click="activeImageIndex = index"
+            >
+              <img :src="img" :alt="`${product.title} view ${index + 1}`" />
+            </button>
           </div>
         </div>
 
@@ -75,15 +88,30 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { useRoute } from '#imports'
-import { getProductById } from '~/utils/products'
+import { ref } from 'vue'
+import { useRoute, useFetch, useSeoMeta } from '#imports'
 import { useCart } from '~/composables/useCart'
 
 const route = useRoute()
 const productId = route.params.id as string
 
-const product = computed(() => getProductById(productId))
+interface Product {
+  id: number;
+  title: string;
+  description: string;
+  price: number;
+  images: string[];
+  category?: {
+    name: string;
+  };
+  imageIcon?: string;
+  inStock?: boolean;
+  features?: string[];
+  specs?: Record<string, string>;
+}
+
+const { data: product } = await useFetch<Product>(`/api/products/${productId}`)
+const activeImageIndex = ref(0)
 const cart = useCart()
 const added = ref(false)
 
@@ -95,7 +123,8 @@ if (product.value) {
 }
 
 const handleAddToCart = () => {
-  if (product.value && product.value.inStock) {
+  if (product.value) {
+    // Note: Database products don't have inStock yet, assuming true for now
     cart.addToCart(product.value, 1)
     added.value = true
     setTimeout(() => {
@@ -160,20 +189,60 @@ const handleAddToCart = () => {
 
 /* Image Gallery */
 .product-gallery {
-  padding: var(--spacing-xl);
+  padding: var(--spacing-lg);
   display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 400px;
+  flex-direction: column;
+  gap: var(--spacing-md);
   border-radius: var(--radius-lg);
+  background: var(--bg-secondary);
 }
 
 .main-image {
-  text-align: center;
+  width: 100%;
+  aspect-ratio: 1/1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  background: var(--bg-tertiary);
+}
+
+.gallery-main {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.thumbnail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+  gap: var(--spacing-sm);
+}
+
+.thumbnail-btn {
+  aspect-ratio: 1/1;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 2px solid transparent;
+  padding: 0;
+  cursor: pointer;
+  background: var(--bg-tertiary);
+  transition: border-color 0.2s;
+}
+
+.thumbnail-btn img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.thumbnail-btn.active {
+  border-color: var(--brand-primary);
 }
 
 .product-placeholder {
-  font-size: 10rem;
+  font-size: 8rem;
   filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
 }
 

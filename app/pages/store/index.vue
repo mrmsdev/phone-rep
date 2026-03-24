@@ -31,10 +31,13 @@
       <div class="products-grid" v-if="filteredProducts.length > 0">
         <NuxtLink v-for="product in filteredProducts" :key="product.id" :to="`/store/${product.id}`" class="product-card glass-panel">
           <div class="product-image-wrap">
-            <div class="product-placeholder">{{ product.imageIcon || '📦' }}</div>
+            <div v-if="product.images && product.images.length" class="product-image">
+              <img :src="product.images[0]" :alt="product.title" />
+            </div>
+            <div v-else class="product-placeholder">{{ product.imageIcon || '📦' }}</div>
           </div>
           <div class="product-info">
-            <span class="product-category">{{ product.categoryName }}</span>
+            <span class="product-category">{{ product.category?.name || 'Accessories' }}</span>
             <h3 class="product-title">{{ product.title }}</h3>
             <p class="product-price">${{ product.price.toFixed(2) }}</p>
             <button class="btn-primary product-action">View Details</button>
@@ -52,24 +55,33 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { products } from '~/utils/products'
-import { useSeoMeta } from '#imports'
+import { useSeoMeta, useFetch } from '#imports'
 
 useSeoMeta({
   title: 'Store',
   description: 'Shop for premium phone accessories, screen protectors, OEM batteries, and professional repair toolkits at MustachPhone.',
 })
 
+const { data: productsData } = await useFetch<any[]>('/api/products')
+const products = computed(() => productsData.value || [])
+
 const searchQuery = ref('')
 const selectedCategory = ref('all')
 
-const categories = ['all', ...new Set(products.map(p => p.categoryName))]
+const categories = computed(() => {
+  if (!products.value) return ['all']
+  const catNames = products.value
+    .map(p => p.category?.name)
+    .filter(Boolean) as string[]
+  return ['all', ...new Set(catNames)]
+})
 
 const filteredProducts = computed(() => {
-  return products.filter(p => {
+  if (!products.value) return []
+  return products.value.filter(p => {
     const matchesSearch = p.title.toLowerCase().includes(searchQuery.value.toLowerCase()) || 
-                          p.description.toLowerCase().includes(searchQuery.value.toLowerCase())
-    const matchesCategory = selectedCategory.value === 'all' || p.categoryName === selectedCategory.value
+                          (p.description && p.description.toLowerCase().includes(searchQuery.value.toLowerCase()))
+    const matchesCategory = selectedCategory.value === 'all' || p.category?.name === selectedCategory.value
     
     return matchesSearch && matchesCategory
   })
@@ -198,6 +210,23 @@ const filteredProducts = computed(() => {
   align-items: center;
   justify-content: center;
   border-bottom: 1px solid var(--border-color);
+  overflow: hidden;
+}
+
+.product-image {
+  width: 100%;
+  height: 100%;
+}
+
+.product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-normal);
+}
+
+.product-card:hover .product-image img {
+  transform: scale(1.1);
 }
 
 .product-placeholder {

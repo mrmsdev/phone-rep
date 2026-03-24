@@ -111,7 +111,7 @@ export const ProductScalarFieldEnum = {
   title: 'title',
   description: 'description',
   price: 'price',
-  image: 'image',
+  images: 'images',
   categoryId: 'categoryId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

@@ -36,17 +36,25 @@ router.post('/products', defineEventHandler(async (event) => {
     const body = await readBody(event)
     return await prisma.product.create({
         data: {
-            title: body.title, price: Number(body.price), description: body.description,
-            image: body.image, categoryId: Number(body.categoryId)
+            title: body.title,
+            price: Number(body.price),
+            description: body.description,
+            images: body.images || [],
+            categoryId: Number(body.categoryId)
         }
     })
 }))
 router.put('/products/:id', defineEventHandler(async (event) => {
     const id = Number(event.context.params!.id)
     const body = await readBody(event)
-    if (body.price) body.price = Number(body.price)
-    if (body.categoryId) body.categoryId = Number(body.categoryId)
-    return await prisma.product.update({ where: { id }, data: body })
+
+    // Prepare data for update
+    const updateData: any = { ...body }
+    if (updateData.price) updateData.price = Number(updateData.price)
+    if (updateData.categoryId) updateData.categoryId = Number(updateData.categoryId)
+    if (updateData.images) updateData.images = body.images
+
+    return await prisma.product.update({ where: { id }, data: updateData })
 }))
 router.delete('/products/:id', defineEventHandler(async (event) => {
     const id = Number(event.context.params!.id)
