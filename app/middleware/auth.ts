@@ -1,6 +1,7 @@
 export default defineNuxtRouteMiddleware(async (to, from) => {
     try {
-        const { user } = await $fetch('/api/auth/user')
+        const userFetch = useRequestFetch()
+        const { user } = await userFetch<{ user: any }>('/api/auth/user')
         if (!user) {
             return navigateTo('/admin/login')
         }
