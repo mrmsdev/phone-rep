@@ -15,6 +15,12 @@
         </NuxtLink>
       </div>
 
+      <nav class="admin-navbar-nav">
+        <NuxtLink to="/admin" class="admin-nav-link" exact-active-class="active">Dashboard</NuxtLink>
+        <NuxtLink to="/admin/products" class="admin-nav-link" active-class="active">Products</NuxtLink>
+        <NuxtLink to="/admin/categories" class="admin-nav-link" active-class="active">Categories</NuxtLink>
+      </nav>
+
       <div class="admin-navbar-actions">
         <div class="admin-user-info" v-if="user">
           <span class="admin-welcome">Welcome, {{ user.name }}</span>
@@ -76,6 +82,40 @@ function handleLogout() {
 
 .admin-logo-accent {
   color: #0070f3;
+}
+
+.admin-navbar-nav {
+  display: flex;
+  gap: 2rem;
+  margin: 0 2rem;
+}
+
+.admin-nav-link {
+  color: #ccc;
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s;
+  padding: 0.5rem 0;
+  position: relative;
+}
+
+.admin-nav-link:hover {
+  color: #fff;
+}
+
+.admin-nav-link.active {
+  color: #0070f3;
+}
+
+.admin-nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #0070f3;
 }
 
 .admin-badge {

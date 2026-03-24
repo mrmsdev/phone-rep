@@ -1,47 +1,60 @@
 <template>
-  <div class="admin-dashboard">
-    <main>
-      <section class="admin-section">
-        <h2>Categories</h2>
-        <div class="card">
-          <ul>
-            <li v-for="cat in categories" :key="cat.id">
-              {{ cat.name }} ({{ cat.slug }})
-              <button @click="deleteCategory(cat.id)" class="danger-btn">Delete</button>
-            </li>
-          </ul>
-          <form @submit.prevent="createCategory" class="add-form">
-            <input v-model="newCategoryName" placeholder="Category Name" required />
-            <input v-model="newCategorySlug" placeholder="Slug" required />
-            <button type="submit">Add Category</button>
-          </form>
-        </div>
-      </section>
+  <div class="admin-overview">
+    <div class="welcome-header">
+      <h1>Dashboard Overview</h1>
+      <p>Welcome to your administration panel. Here's a quick look at your store's status.</p>
+    </div>
 
-      <section class="admin-section">
-        <h2>Products</h2>
-        <div class="card">
-          <ul>
-            <li v-for="prod in products" :key="prod.id">
-              <strong>{{ prod.title }}</strong> - ${{ prod.price }}
-              <span v-if="prod.category">({{ prod.category.name }})</span>
-              <button @click="deleteProduct(prod.id)" class="danger-btn">Delete</button>
-            </li>
-          </ul>
-          <form @submit.prevent="createProduct" class="add-form product-form">
-            <input v-model="newProduct.title" placeholder="Title" required />
-            <input v-model="newProduct.price" type="number" step="0.01" placeholder="Price" required />
-            <input v-model="newProduct.description" placeholder="Description" />
-            <input v-model="newProduct.image" placeholder="Image URL" />
-            <select v-model="newProduct.categoryId">
-              <option :value="null">No Category</option>
-              <option v-for="cat in categories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
-            </select>
-            <button type="submit">Add Product</button>
-          </form>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon products-icon">
+          <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+            <line x1="12" y1="22.08" x2="12" y2="12"></line>
+          </svg>
         </div>
-      </section>
-    </main>
+        <div class="stat-info">
+          <h3>Products</h3>
+          <p class="stat-number">{{ productsCount }}</p>
+          <NuxtLink to="/admin/products" class="stat-link">Manage Products →</NuxtLink>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon categories-icon">
+          <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+        </div>
+        <div class="stat-info">
+          <h3>Categories</h3>
+          <p class="stat-number">{{ categoriesCount }}</p>
+          <NuxtLink to="/admin/categories" class="stat-link">Manage Categories →</NuxtLink>
+        </div>
+      </div>
+    </div>
+
+    <div class="quick-actions">
+      <h2>Quick Actions</h2>
+      <div class="actions-grid">
+        <NuxtLink to="/admin/products" class="action-card">
+          <span class="action-title">Add New Product</span>
+          <span class="action-desc">Add a new item to your store inventory</span>
+        </NuxtLink>
+        <NuxtLink to="/admin/categories" class="action-card">
+          <span class="action-title">Create Category</span>
+          <span class="action-desc">Organize your products with new categories</span>
+        </NuxtLink>
+        <NuxtLink to="/" class="action-card">
+          <span class="action-title">View Website</span>
+          <span class="action-desc">Preview your changes on the live site</span>
+        </NuxtLink>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -51,116 +64,134 @@ definePageMeta({
   layout: 'admin'
 })
 
-const { data: categories, refresh: refreshCategories } = useFetch<any[]>('/api/admin/categories')
-const { data: products, refresh: refreshProducts } = useFetch<any[]>('/api/admin/products')
+const { data: categories } = useFetch<any[]>('/api/admin/categories')
+const { data: products } = useFetch<any[]>('/api/admin/products')
 
-const newCategoryName = ref('')
-const newCategorySlug = ref('')
-
-const newProduct = ref({
-  title: '',
-  price: '',
-  description: '',
-  image: '',
-  categoryId: null as number | null
-})
-
-async function createCategory() {
-  await $fetch('/api/admin/categories', {
-    method: 'POST',
-    body: { name: newCategoryName.value, slug: newCategorySlug.value }
-  })
-  newCategoryName.value = ''
-  newCategorySlug.value = ''
-  refreshCategories()
-}
-
-async function deleteCategory(id: number) {
-  if (confirm('Are you sure?')) {
-    await $fetch(`/api/admin/categories/${id}`, { method: 'DELETE' })
-    refreshCategories()
-    refreshProducts()
-  }
-}
-
-async function createProduct() {
-  await $fetch('/api/admin/products', {
-    method: 'POST',
-    body: newProduct.value
-  })
-  newProduct.value = { title: '', price: '', description: '', image: '', categoryId: null }
-  refreshProducts()
-}
-
-async function deleteProduct(id: number) {
-  if (confirm('Are you sure?')) {
-    await $fetch(`/api/admin/products/${id}`, { method: 'DELETE' })
-    refreshProducts()
-  }
-}
+const categoriesCount = computed(() => categories.value?.length || 0)
+const productsCount = computed(() => products.value?.length || 0)
 </script>
 
 <style scoped>
-.admin-dashboard {
+.admin-overview {
   padding: 1rem 0;
-  font-family: inherit;
 }
-.user-info button {
-  padding: 0.5rem 1rem;
-  background: #333;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-.admin-section {
+
+.welcome-header {
   margin-bottom: 3rem;
 }
-.card {
-  background: #f9f9f9;
-  padding: 1.5rem;
-  border-radius: 8px;
-  border: 1px solid #ddd;
+
+.welcome-header h1 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  color: #1a1a1a;
 }
-ul {
-  list-style: none;
-  padding: 0;
-  margin-bottom: 1.5rem;
+
+.welcome-header p {
+  color: #666;
+  font-size: 1.1rem;
 }
-li {
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-bottom: 4rem;
+}
+
+.stat-card {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 0.75rem 0;
-  border-bottom: 1px solid #eee;
+  gap: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  border: 1px solid #eee;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
-.danger-btn {
-  background: #ff4d4f;
-  color: white;
-  border: none;
-  padding: 0.3rem 0.6rem;
-  border-radius: 4px;
-  cursor: pointer;
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 15px rgba(0,0,0,0.1);
 }
-.add-form {
+
+.stat-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
   display: flex;
-  gap: 1rem;
+  align-items: center;
+  justify-content: center;
 }
-.add-form input, .add-form select {
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  flex: 1;
+
+.products-icon {
+  background: rgba(0, 112, 243, 0.1);
+  color: #0070f3;
 }
-.product-form {
-  flex-wrap: wrap;
+
+.categories-icon {
+  background: rgba(255, 94, 0, 0.1);
+  color: #ff5e00;
 }
-button[type="submit"] {
-  padding: 0.5rem 1.5rem;
-  background: #0070f3;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
+
+.stat-info h3 {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #888;
+  margin-bottom: 0.25rem;
+}
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 0.5rem;
+}
+
+.stat-link {
+  font-size: 0.9rem;
+  color: #0070f3;
+  font-weight: 600;
+}
+
+.quick-actions h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: #1a1a1a;
+}
+
+.actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.action-card {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 10px;
+  border: 1px solid #eee;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.2s;
+}
+
+.action-card:hover {
+  background: #fdfdfd;
+  border-color: #0070f3;
+  transform: scale(1.02);
+}
+
+.action-title {
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.action-desc {
+  font-size: 0.9rem;
+  color: #666;
 }
 </style>
