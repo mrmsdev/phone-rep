@@ -56,6 +56,24 @@ router.put('/products/:id', defineEventHandler(async (event) => {
 
     return await prisma.product.update({ where: { id }, data: updateData })
 }))
+// Messages Management
+router.get('/messages', defineEventHandler(async () => {
+    return await prisma.contactMessage.findMany({
+        orderBy: { createdAt: 'desc' }
+    })
+}))
+router.patch('/messages/:id/read', defineEventHandler(async (event) => {
+    const id = Number(event.context.params!.id)
+    return await prisma.contactMessage.update({
+        where: { id },
+        data: { isRead: true }
+    })
+}))
+router.delete('/messages/:id', defineEventHandler(async (event) => {
+    const id = Number(event.context.params!.id)
+    return await prisma.contactMessage.delete({ where: { id } })
+}))
+
 router.delete('/products/:id', defineEventHandler(async (event) => {
     const id = Number(event.context.params!.id)
     return await prisma.product.delete({ where: { id } })

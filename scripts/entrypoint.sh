@@ -18,7 +18,18 @@ wait_for_db() {
 if [ "$NODE_ENV" = "production" ] && [ -n "$DATABASE_URL" ]; then
   wait_for_db
   echo "Running prisma migrate deploy..."
-  npx prisma migrate deploy
+  if npx prisma migrate deploy; then
+    echo "Migrations applied successfully."
+  else
+    echo "Migration failed!"
+  fi
+  
+  echo "Running prisma db seed..."
+  if npx prisma db seed; then
+    echo "Seeding completed successfully."
+  else
+    echo "Seeding failed!"
+  fi
 fi
 
 echo "Starting application..."

@@ -38,22 +38,27 @@
           <form @submit.prevent="submitForm" class="contact-form">
             <div class="form-group">
               <label for="name">Name</label>
-              <input type="text" id="name" placeholder="Your full name" required />
+              <input type="text" id="name" v-model="formData.name" placeholder="Your full name" required />
             </div>
             
             <div class="form-group">
               <label for="email">Email</label>
-              <input type="email" id="email" placeholder="Your email address" required />
+              <input type="email" id="email" v-model="formData.email" placeholder="Your email address" required />
+            </div>
+            
+            <div class="form-group">
+              <label for="phone">Phone Number</label>
+              <input type="tel" id="phone" v-model="formData.phone" placeholder="Your phone number" required />
             </div>
             
             <div class="form-group">
               <label for="device">Device & Issue</label>
-              <input type="text" id="device" placeholder="e.g. iPhone 13 Pro Max - Cracked Screen" required />
+              <input type="text" id="device" v-model="formData.device" placeholder="e.g. iPhone 13 Pro Max - Cracked Screen" required />
             </div>
             
             <div class="form-group">
               <label for="message">Additional Details</label>
-              <textarea id="message" rows="5" placeholder="Please describe the issue in detail..."></textarea>
+              <textarea id="message" v-model="formData.message" rows="5" placeholder="Please describe the issue in detail..."></textarea>
             </div>
             
             <button type="submit" class="btn-primary form-submit">Send Message</button>
@@ -72,9 +77,39 @@ useSeoMeta({
   description: 'Get in touch with MustachPhone to schedule your fast, reliable on-site device repair. Contact us via phone, email, or our online form.',
 })
 
-const submitForm = () => {
-  // Mock form submission
-  alert('Thank you! Your request has been sent. We will contact you shortly.')
+const formData = ref({
+  name: '',
+  email: '',
+  phone: '',
+  device: '',
+  message: ''
+})
+
+const submitting = ref(false)
+
+const submitForm = async () => {
+  submitting.value = true
+  try {
+    const response = await $fetch('/api/contact', {
+      method: 'POST',
+      body: formData.value
+    })
+    
+    alert('Thank you! Your request has been sent. We will contact you shortly.')
+    
+    // Reset form
+    formData.value = {
+      name: '',
+      email: '',
+      phone: '',
+      device: '',
+      message: ''
+    }
+  } catch (error: any) {
+    alert(error.statusMessage || 'An error occurred while sending your request. Please try again or call us directly.')
+  } finally {
+    submitting.value = false
+  }
 }
 </script>
 

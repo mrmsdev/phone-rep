@@ -19,6 +19,7 @@
         <NuxtLink to="/admin" class="admin-nav-link" exact-active-class="active">Dashboard</NuxtLink>
         <NuxtLink to="/admin/products" class="admin-nav-link" active-class="active">Products</NuxtLink>
         <NuxtLink to="/admin/categories" class="admin-nav-link" active-class="active">Categories</NuxtLink>
+        <NuxtLink to="/admin/messages" class="admin-nav-link" active-class="active">Messages</NuxtLink>
       </nav>
 
       <div class="admin-navbar-actions">

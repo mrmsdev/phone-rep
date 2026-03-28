@@ -28,6 +28,7 @@ RUN apk add --no-cache openssl netcat-openbsd
 # Copy only the necessary files from the builder
 COPY --from=builder /app/.output ./.output
 COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/prisma.config.* ./
 COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/scripts ./scripts
 

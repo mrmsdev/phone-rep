@@ -1,8 +1,23 @@
-import { prisma } from '../server/utils/prisma'
-import bcrypt from 'bcryptjs'
+import { Pool } from 'pg'
+import { PrismaPg } from '@prisma/adapter-pg'
+import { PrismaClient } from '../lib/prisma-client/client'
+import { Bcrypt } from 'oslo/password'
+
+// Standalone Prisma initialization for the seed script
+const connectionString = process.env.DATABASE_URL
+const pool = new Pool({ connectionString })
+const adapter = new PrismaPg(pool)
+const prisma = new PrismaClient({ adapter })
 
 async function main() {
-    const passwordHash = bcrypt.hashSync('admin123', 10)
+    console.log('Starting seed...')
+
+    if (!connectionString) {
+        throw new Error('DATABASE_URL is not set')
+    }
+
+    const passwordHash = await new Bcrypt().hash('admin123')
+
     const admin = await prisma.user.upsert({
         where: { email: 'admin@mustachphone.com' },
         update: {},
@@ -13,13 +28,17 @@ async function main() {
             role: 'ADMIN'
         }
     })
-    console.log('Admin user created:', admin.email)
+
+    console.log('Admin user created/updated:', admin.email)
 }
 
-main().then(async () => {
-    await prisma.$disconnect()
-}).catch(async (e) => {
-    console.error(e)
-    await prisma.$disconnect()
-    process.exit(1)
-})
+main()
+    .then(async () => {
+        await prisma.$disconnect()
+        console.log('Seed completed successfully.')
+    })
+    .catch(async (e) => {
+        console.error('Error during seed:', e)
+        await prisma.$disconnect()
+        process.exit(1)
+    })

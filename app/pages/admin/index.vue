@@ -36,6 +36,20 @@
           <NuxtLink to="/admin/categories" class="stat-link">Manage Categories →</NuxtLink>
         </div>
       </div>
+
+      <div class="stat-card">
+        <div class="stat-icon messages-icon">
+          <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+            <polyline points="22,6 12,13 2,6"></polyline>
+          </svg>
+        </div>
+        <div class="stat-info">
+          <h3>Messages</h3>
+          <p class="stat-number">{{ unreadMessagesCount }}</p>
+          <NuxtLink to="/admin/messages" class="stat-link">View Messages →</NuxtLink>
+        </div>
+      </div>
     </div>
 
     <div class="quick-actions">
@@ -48,6 +62,10 @@
         <NuxtLink to="/admin/categories" class="action-card">
           <span class="action-title">Create Category</span>
           <span class="action-desc">Organize your products with new categories</span>
+        </NuxtLink>
+        <NuxtLink to="/admin/messages" class="action-card">
+          <span class="action-title">Review Messages</span>
+          <span class="action-desc">Check new inquiries from potential customers</span>
         </NuxtLink>
         <NuxtLink to="/" class="action-card">
           <span class="action-title">View Website</span>
@@ -66,9 +84,11 @@ definePageMeta({
 
 const { data: categories } = useFetch<any[]>('/api/admin/categories')
 const { data: products } = useFetch<any[]>('/api/admin/products')
+const { data: messages } = useFetch<any[]>('/api/admin/messages')
 
 const categoriesCount = computed(() => categories.value?.length || 0)
 const productsCount = computed(() => products.value?.length || 0)
+const unreadMessagesCount = computed(() => messages.value?.filter(m => !m.isRead).length || 0)
 </script>
 
 <style scoped>
@@ -132,6 +152,11 @@ const productsCount = computed(() => products.value?.length || 0)
 .categories-icon {
   background: rgba(255, 94, 0, 0.1);
   color: #ff5e00;
+}
+
+.messages-icon {
+  background: rgba(0, 196, 159, 0.1);
+  color: #00c49f;
 }
 
 .stat-info h3 {
