@@ -49,7 +49,7 @@ export const products: Product[] = [
         categoryId: 'tools',
         categoryName: 'Toolkits',
         title: 'Pro Repair 64-Bit Toolkit',
-        description: 'Comprehensive 64-piece precision driver set perfect for phone, tablet, and laptop repair. Includes spudgers, tweezers, and suction cups.',
+        description: 'Comprehensive 64-piece precision driver set perfect for phone and tablet repair. Includes spudgers, tweezers, and suction cups.',
         price: 59.99,
         imageIcon: '🛠️',
         features: ['64 Precision Bits', 'Anti-static Wrist Strap', 'Ergonomic Handle'],

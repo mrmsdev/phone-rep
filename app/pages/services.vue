@@ -29,24 +29,6 @@
           </div>
         </div>
         
-        <!-- Laptop Repairs -->
-        <div class="service-category reverse" id="laptop">
-          <div class="category-info">
-            <h2>Laptop Repairs</h2>
-            <p>Expert logic board and hardware repairs for MacBooks and PC laptops.</p>
-            <ul class="service-details-list">
-              <li>LCD/Screen Replacement</li>
-              <li>Keyboard Replacement</li>
-              <li>Battery & Power Issues</li>
-              <li>Data Recovery & Backup</li>
-              <li>Motherboard Micro-soldering</li>
-            </ul>
-            <NuxtLink to="/contact" class="btn-primary mt-4">Book Laptop Repair</NuxtLink>
-          </div>
-          <div class="category-image glass-panel">
-            <div class="placeholder-img" style="background-image: url('/images/laptop_repair.png');"></div>
-          </div>
-        </div>
 
       </div>
     </div>
@@ -58,7 +40,7 @@ import { useSeoMeta } from '#imports'
 
 useSeoMeta({
   title: 'Repair Services',
-  description: 'Explore our complete list of on-site repair services for phones, tablets, and laptops. We replace screens, batteries, ports, and logic boards.',
+  description: 'Explore our complete list of on-site repair services for phones and tablets. We replace screens, batteries, ports, and logic boards.',
 })
 </script>
 

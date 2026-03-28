@@ -14,7 +14,7 @@ useSeoMeta({
       : 'MustachPhone - Fast On-Site Screen Repair'
   },
   ogTitle: 'MustachPhone - Reliable On-Site Screen Repair',
-  description: 'MustachPhone provides fast, professional on-site screen, battery, and logic board repair services for iPhones, Samsung galaxies, and Laptops.',
+  description: 'MustachPhone provides fast, professional on-site screen, battery, and logic board repair services for iPhones and Samsung galaxies.',
   ogDescription: 'Get your phone fixed at your desk! Fast, reliable on-site screen and battery repair by certified technicians.',
   ogImage: '/images/logo.png',
   twitterCard: 'summary_large_image',

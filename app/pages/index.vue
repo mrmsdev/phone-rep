@@ -56,16 +56,6 @@
           </LazyServiceCard>
           
           <LazyServiceCard 
-            title="Laptop Repair" 
-            description="Keyboard replacements, motherboard logic board repairs, screen fixes, and data recovery."
-            link="/services#laptop"
-          >
-            <template #icon>
-              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 16V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9m16 0H4m16 0 1.28 2.55a1 1 0 0 1-.9 1.45H3.62a1 1 0 0 1-.9-1.45L4 16"/></svg>
-            </template>
-          </LazyServiceCard>
-
-          <LazyServiceCard 
             title="Tablet Repair" 
             description="Glass digitizer replacements, battery issues, and charging problems solved quickly."
             link="/services#tablet"
@@ -98,7 +88,7 @@ import { useSeoMeta } from '#imports'
 
 useSeoMeta({
   title: 'Home',
-  description: 'MustachPhone is your local expert for fast, reliable, and professional phone, tablet, and laptop screen repair. We come to you!',
+  description: 'MustachPhone is your local expert for fast, reliable, and professional phone and tablet screen repair. We come to you!',
 })
 </script>
 
