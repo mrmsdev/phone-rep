@@ -22,7 +22,7 @@ async function main() {
         where: { email: 'driss@maouni.com' },
         update: {},
         create: {
-            email: 'admin@mustachphone.com',
+            email: 'driss@maouni.com',
             name: 'Admin',
             passwordHash,
             role: 'ADMIN'
