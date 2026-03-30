@@ -7,7 +7,7 @@ wait_for_db() {
   # Use nc (netcat) to check if the database port is open
   # We extract host and port from DATABASE_URL if possible, 
   # but in Docker Compose we usually know it's 'db:5432'
-  until nc -z db 5432; do
+  until nc -z localhost 5432; do
     echo "Database is unavailable - sleeping"
     sleep 1
   done
