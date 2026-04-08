@@ -2,6 +2,16 @@ import { Pool } from 'pg'
 import { PrismaPg } from '@prisma/adapter-pg'
 import { PrismaClient } from '../lib/prisma-client/client'
 import { Bcrypt } from 'oslo/password'
+import { loadEnvFile } from 'node:process'
+
+// Try to load .env if DATABASE_URL is not set
+if (!process.env.DATABASE_URL) {
+    try {
+        loadEnvFile()
+    } catch (e) {
+        // .env might not exist in some environments, ignore
+    }
+}
 
 // Standalone Prisma initialization for the seed script
 const connectionString = process.env.DATABASE_URL

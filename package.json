@@ -28,7 +28,7 @@
     "vue-router": "^5.0.3"
   },
   "prisma": {
-    "seed": "tsx prisma/seed.ts"
+    "seed": "tsx --env-file=.env prisma/seed.ts"
   },
   "devDependencies": {
     "@types/pg": "^8.20.0"
