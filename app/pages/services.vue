@@ -29,6 +29,43 @@
           </div>
         </div>
         
+        <!-- Tablet Repairs -->
+        <div class="service-category reverse" id="tablet">
+          <div class="category-info">
+            <h2>Tablet Repairs</h2>
+            <p>Expert service for iPads, Samsung Galaxy Tabs, and other popular tablet devices.</p>
+            <ul class="service-details-list">
+              <li>Digitizer & LCD Replacement</li>
+              <li>Battery Upgrades</li>
+              <li>Charging Port Solutions</li>
+              <li>Software Troubleshooting</li>
+            </ul>
+            <NuxtLink to="/contact" class="btn-primary mt-4">Book Tablet Repair</NuxtLink>
+          </div>
+          <div class="category-image glass-panel">
+            <div class="placeholder-img" style="background-image: url('/images/hero.png'); background-position: center;"></div>
+          </div>
+        </div>
+
+        <!-- Laptop Repairs -->
+        <div class="service-category" id="laptop">
+          <div class="category-info">
+            <h2>Laptop Repairs</h2>
+            <p>We repair all major laptop brands including Apple MacBooks, Dell, HP, Lenovo, and more.</p>
+            <ul class="service-details-list">
+              <li>Screen Replacement</li>
+              <li>Battery Replacement</li>
+              <li>Keyboard & Trackpad Repair</li>
+              <li>Data Recovery</li>
+              <li>Operating System Reinstalls</li>
+            </ul>
+            <NuxtLink to="/contact" class="btn-primary mt-4">Book Laptop Repair</NuxtLink>
+          </div>
+          <div class="category-image glass-panel">
+            <div class="placeholder-img" style="background-image: url('/images/hero.png'); background-position: left;"></div>
+          </div>
+        </div>
+        
 
       </div>
     </div>

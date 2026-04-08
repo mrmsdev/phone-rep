@@ -8,7 +8,6 @@ export interface Product {
     imageIcon: string;
     features: string[];
     specs: Record<string, string>;
-    inStock: boolean;
 }
 
 export const products: Product[] = [
@@ -26,7 +25,6 @@ export const products: Product[] = [
             'Type': 'OLED',
             'Resolution': '2532 x 1170',
         },
-        inStock: true,
     },
     {
         id: 'battery-samsung-s23',
@@ -42,7 +40,6 @@ export const products: Product[] = [
             'Capacity': '3900mAh',
             'Chemistry': 'Lithium-ion',
         },
-        inStock: true,
     },
     {
         id: 'toolkit-pro-64',
@@ -58,7 +55,6 @@ export const products: Product[] = [
             'Case': 'Magnetic Snapping Case',
             'Pieces': '64',
         },
-        inStock: true,
     },
     {
         id: 'fast-charger-30w',
@@ -74,7 +70,6 @@ export const products: Product[] = [
             'Output': 'USB-C PD 3.0',
             'Wattage': '30W Max',
         },
-        inStock: true,
     },
     {
         id: 'glass-protector-iphone-15',
@@ -90,7 +85,6 @@ export const products: Product[] = [
             'Thickness': '0.33mm',
             'Material': 'Aluminosilicate Glass',
         },
-        inStock: true,
     },
     {
         id: 'silicone-case-pixel-8',
@@ -106,7 +100,6 @@ export const products: Product[] = [
             'Material': 'Liquid Silicone / PC',
             'Colors': 'Charcoal, Sage, Obsidian',
         },
-        inStock: true,
     }
 ];
 

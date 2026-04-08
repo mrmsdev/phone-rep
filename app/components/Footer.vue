@@ -24,6 +24,7 @@
           <h3>Services</h3>
           <NuxtLink to="/services">Phone Repair</NuxtLink>
           <NuxtLink to="/services">Tablet Repair</NuxtLink>
+          <NuxtLink to="/services">Laptop Repair</NuxtLink>
         </div>
         <div class="link-group">
           <h3>Company</h3>

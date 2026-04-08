@@ -35,17 +35,12 @@
         <div class="product-info-sec">
           <h1 class="product-title">{{ product.title }}</h1>
           <p class="product-price">${{ product.price.toFixed(2) }}</p>
-          
-          <div class="stock-status">
-            <span v-if="product.inStock" class="status-badge in-stock">✓ In Stock</span>
-            <span v-else class="status-badge out-of-stock">✗ Out of Stock</span>
-          </div>
 
           <p class="product-description">{{ product.description }}</p>
 
           <div class="product-actions">
-            <button class="btn-primary add-to-cart-btn" :disabled="!product.inStock" @click="handleAddToCart">
-              {{ product.inStock ? 'Add to Cart' : 'Out of Stock' }}
+            <button class="btn-primary add-to-cart-btn" @click="handleAddToCart">
+              Add to Cart
             </button>
             <transition name="fade">
               <span v-if="added" class="added-msg">Added to cart!</span>
@@ -105,7 +100,6 @@ interface Product {
     name: string;
   };
   imageIcon?: string;
-  inStock?: boolean;
   features?: string[];
   specs?: Record<string, string>;
 }
@@ -124,7 +118,6 @@ if (product.value) {
 
 const handleAddToCart = () => {
   if (product.value) {
-    // Note: Database products don't have inStock yet, assuming true for now
     cart.addToCart(product.value, 1)
     added.value = true
     setTimeout(() => {
@@ -264,31 +257,6 @@ const handleAddToCart = () => {
   color: var(--brand-primary);
   font-weight: 700;
   margin-bottom: var(--spacing-md);
-}
-
-/* Stock Status */
-.stock-status {
-  margin-bottom: var(--spacing-md);
-}
-
-.status-badge {
-  padding: 0.3rem 0.8rem;
-  border-radius: 20px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  display: inline-block;
-}
-
-.in-stock {
-  background: rgba(46, 204, 113, 0.2);
-  color: #2ecc71;
-  border: 1px solid rgba(46, 204, 113, 0.3);
-}
-
-.out-of-stock {
-  background: rgba(231, 76, 60, 0.2);
-  color: #e74c3c;
-  border: 1px solid rgba(231, 76, 60, 0.3);
 }
 
 .product-description {
