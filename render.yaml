@@ -1,0 +1,23 @@
+services:
+  # 1. The Web Application
+  - type: web
+    name: mustachphone-app
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: free # Change this to 'starter' or higher if you need more power
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # Automatically injects the full PostgreSQL connection string
+      - key: DATABASE_URL
+        fromDatabase:
+          name: mustachphone-db
+          property: connectionString
+
+# 2. The Managed PostgreSQL Database
+databases:
+  - name: mustachphone-db
+    databaseName: phonerepair
+    user: postgres
+    plan: free # Render's free DB expires after 90 days. Use 'starter' for production.
