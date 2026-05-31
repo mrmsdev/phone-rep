@@ -1,6 +1,5 @@
-import { lucia } from '../../utils/auth'
 import { prisma } from '../../utils/prisma'
-import { Bcrypt } from 'oslo/password'
+import { verifyPasswordScrypt } from '../../utils/crypto'
 
 export default defineEventHandler(async (event) => {
     const { email, password } = await readBody(event)
@@ -13,13 +12,18 @@ export default defineEventHandler(async (event) => {
         where: { email }
     })
 
-    // Hash match 
-    if (!user || !(await new Bcrypt().verify(user.passwordHash, password))) {
+    if (!user || !verifyPasswordScrypt(password, user.passwordHash)) {
         throw createError({ statusCode: 401, message: 'Incorrect email or password' })
     }
 
-    const session = await lucia.createSession(user.id, {})
-    appendHeader(event, 'Set-Cookie', lucia.createSessionCookie(session.id).serialize())
+    await setUserSession(event, {
+        user: {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            role: user.role
+        }
+    })
 
     return { id: user.id, email: user.email, name: user.name, role: user.role }
 })

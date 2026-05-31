@@ -1,9 +1,7 @@
 import { Pool } from 'pg'
 import { PrismaPg } from '@prisma/adapter-pg'
-import pkg from '@prisma/client'
+import { PrismaClient } from '@prisma/client'
 
-// Extract PrismaClient from the default bundle object
-const { PrismaClient } = pkg
 const connectionString = process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/phonerepair?schema=public'
 
 const pool = new Pool({ connectionString })

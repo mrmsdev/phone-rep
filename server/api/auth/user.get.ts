@@ -1,6 +1,7 @@
-export default defineEventHandler((event) => {
-    if (!event.context.user) {
+export default defineEventHandler(async (event) => {
+    const session = await getUserSession(event)
+    if (!session || !session.user) {
         throw createError({ statusCode: 401 })
     }
-    return { user: event.context.user }
+    return { user: session.user }
 })

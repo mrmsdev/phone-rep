@@ -1,7 +1,7 @@
 import { Pool } from 'pg'
 import { PrismaPg } from '@prisma/adapter-pg'
-import { PrismaClient } from '../lib/prisma-client/client'
-import { Bcrypt } from 'oslo/password'
+import { PrismaClient } from '@prisma/client'
+import { hashPasswordScrypt } from '../server/utils/crypto'
 import { loadEnvFile } from 'node:process'
 
 // Try to load .env if DATABASE_URL is not set
@@ -26,11 +26,13 @@ async function main() {
         throw new Error('DATABASE_URL is not set')
     }
 
-    const passwordHash = await new Bcrypt().hash('admin123')
+    const passwordHash = hashPasswordScrypt('admin123')
 
     const admin = await prisma.user.upsert({
         where: { email: 'driss@maouni.com' },
-        update: {},
+        update: {
+            passwordHash // force update the password hash to the new scrypt algorithm
+        },
         create: {
             email: 'driss@maouni.com',
             name: 'Admin',
