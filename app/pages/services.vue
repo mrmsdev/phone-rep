@@ -62,7 +62,7 @@
             <NuxtLink to="/contact" class="btn-primary mt-4">Book Laptop Repair</NuxtLink>
           </div>
           <div class="category-image glass-panel">
-            <div class="placeholder-img" style="background-image: url('/images/hero.png'); background-position: left;"></div>
+            <div class="placeholder-img" style="background-image: url('/images/laptop.png'); background-position: center;"></div>
           </div>
         </div>
         
