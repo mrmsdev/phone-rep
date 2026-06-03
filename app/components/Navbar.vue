@@ -31,8 +31,24 @@
           </svg>
           <span class="cart-badge" v-if="cartItemCount > 0">{{ cartItemCount }}</span>
         </NuxtLink>
-        <NuxtLink to="/contact" class="btn-primary">Get a Quote</NuxtLink>
+        <NuxtLink to="/contact" class="btn-primary desktop-only-btn">Get a Quote</NuxtLink>
+        
+        <button class="burger-menu-btn" @click="toggleMobileMenu" :aria-expanded="isMobileMenuOpen" aria-label="Toggle menu">
+          <span class="burger-bar" :class="{ 'open': isMobileMenuOpen }"></span>
+          <span class="burger-bar" :class="{ 'open': isMobileMenuOpen }"></span>
+          <span class="burger-bar" :class="{ 'open': isMobileMenuOpen }"></span>
+        </button>
       </div>
+    </div>
+
+    <!-- Mobile Menu Drawer -->
+    <div :class="['mobile-menu', { 'mobile-menu--open': isMobileMenuOpen }]">
+      <nav class="mobile-menu-links">
+        <NuxtLink to="/" class="mobile-nav-link" @click="closeMobileMenu">Home</NuxtLink>
+        <NuxtLink to="/services" class="mobile-nav-link" @click="closeMobileMenu">Services</NuxtLink>
+        <NuxtLink to="/store" class="mobile-nav-link" @click="closeMobileMenu">Store</NuxtLink>
+        <NuxtLink to="/contact" class="mobile-nav-link" @click="closeMobileMenu">Contact</NuxtLink>
+      </nav>
     </div>
   </header>
 </template>
@@ -43,9 +59,18 @@ import { useCart } from '~/composables/useCart'
 
 const { cartItemCount } = useCart()
 const isScrolled = ref(false)
+const isMobileMenuOpen = ref(false)
 
 const handleScroll = () => {
   isScrolled.value = window.scrollY > 50
+}
+
+const toggleMobileMenu = () => {
+  isMobileMenuOpen.value = !isMobileMenuOpen.value
+}
+
+const closeMobileMenu = () => {
+  isMobileMenuOpen.value = false
 }
 
 onMounted(() => {
@@ -53,7 +78,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-  window.addEventListener('scroll', handleScroll)
+  window.removeEventListener('scroll', handleScroll)
 })
 </script>
 
@@ -185,7 +210,87 @@ onUnmounted(() => {
 
 @media (max-width: 768px) {
   .navbar-links {
-    display: none; /* Hide on mobile for now, add hamburger menu later */
+    display: none;
   }
+  .desktop-only-btn {
+    display: none !important;
+  }
+  .burger-menu-btn {
+    display: flex !important;
+  }
+}
+
+/* Burger menu button styling */
+.burger-menu-btn {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 24px;
+  height: 18px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 1100;
+}
+
+.burger-bar {
+  width: 100%;
+  height: 2px;
+  background-color: var(--text-primary);
+  transition: all var(--transition-fast);
+}
+
+.burger-bar.open:nth-child(1) {
+  transform: translateY(8px) rotate(45deg);
+}
+
+.burger-bar.open:nth-child(2) {
+  opacity: 0;
+}
+
+.burger-bar.open:nth-child(3) {
+  transform: translateY(-8px) rotate(-45deg);
+}
+
+/* Mobile Menu Panel */
+.mobile-menu {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 280px;
+  height: 100vh;
+  background: var(--bg-secondary);
+  border-left: 1px solid var(--border-color);
+  box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+  padding: 6rem 2rem 2rem;
+  display: flex;
+  flex-direction: column;
+  transition: right var(--transition-normal);
+  z-index: 1050;
+}
+
+.mobile-menu--open {
+  right: 0;
+}
+
+.mobile-menu-links {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.mobile-nav-link {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  opacity: 0.8;
+  transition: all var(--transition-fast);
+}
+
+.mobile-nav-link:hover,
+.mobile-nav-link.router-link-active {
+  color: var(--brand-primary);
+  opacity: 1;
+  padding-left: 0.5rem;
 }
 </style>
