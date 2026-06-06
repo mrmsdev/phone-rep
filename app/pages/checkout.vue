@@ -49,7 +49,7 @@
             </div>
             
             <button type="submit" class="btn-primary submit-btn">
-              Pay ${{ cartTotal.toFixed(2) }}
+              MAD{{ cartTotal.toFixed(2) }}
             </button>
           </form>
         </div>
@@ -59,13 +59,13 @@
           <div class="summary-items">
             <div v-for="item in cart" :key="item.id" class="summary-item">
               <span class="item-title">{{ item.quantity }}x {{ item.title }}</span>
-              <span class="item-price">${{ (item.price * item.quantity).toFixed(2) }}</span>
+              <span class="item-price">MAD{{ (item.price * item.quantity).toFixed(2) }}</span>
             </div>
           </div>
           <hr class="divider"/>
           <div class="summary-line total">
             <span>Total</span>
-            <span>${{ cartTotal.toFixed(2) }}</span>
+            <span>MAD{{ cartTotal.toFixed(2) }}</span>
           </div>
         </div>
       </div>

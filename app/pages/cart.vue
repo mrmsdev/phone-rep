@@ -13,7 +13,7 @@
             <div class="item-icon">{{ item.imageIcon }}</div>
             <div class="item-details">
               <h3 class="item-title">{{ item.title }}</h3>
-              <p class="item-price">${{ item.price.toFixed(2) }}</p>
+              <p class="item-price">MAD{{ item.price.toFixed(2) }}</p>
             </div>
             <div class="item-quantity">
               <button @click="updateQuantity(item.id, item.quantity - 1)" class="qty-btn" :disabled="item.quantity <= 1">-</button>
@@ -21,7 +21,7 @@
               <button @click="updateQuantity(item.id, item.quantity + 1)" class="qty-btn">+</button>
             </div>
             <div class="item-total">
-              ${{ (item.price * item.quantity).toFixed(2) }}
+              MAD{{ (item.price * item.quantity).toFixed(2) }}
             </div>
             <button @click="removeFromCart(item.id)" class="remove-btn" title="Remove Item">
               ✕
@@ -33,7 +33,7 @@
           <h3>Order Summary</h3>
           <div class="summary-line">
             <span>Subtotal ({{ cartItemCount }} items)</span>
-            <span>${{ cartTotal.toFixed(2) }}</span>
+            <span>MAD{{ cartTotal.toFixed(2) }}</span>
           </div>
           <div class="summary-line">
             <span>Shipping</span>
@@ -42,7 +42,7 @@
           <hr class="summary-divider"/>
           <div class="summary-line total">
             <span>Total</span>
-            <span>${{ cartTotal.toFixed(2) }}</span>
+            <span>MAD{{ cartTotal.toFixed(2) }}</span>
           </div>
           <NuxtLink to="/checkout" class="btn-primary checkout-btn">Proceed to Checkout</NuxtLink>
         </div>

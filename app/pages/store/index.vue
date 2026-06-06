@@ -39,7 +39,7 @@
           <div class="product-info">
             <span class="product-category">{{ product.category?.name || 'Accessories' }}</span>
             <h3 class="product-title">{{ product.title }}</h3>
-            <p class="product-price">${{ product.price.toFixed(2) }}</p>
+            <p class="product-price">MAD{{ product.price.toFixed(2) }}</p>
             <button class="btn-primary product-action">View Details</button>
           </div>
         </NuxtLink>

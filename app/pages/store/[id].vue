@@ -34,7 +34,7 @@
         <!-- Product Details -->
         <div class="product-info-sec">
           <h1 class="product-title">{{ product.title }}</h1>
-          <p class="product-price">${{ product.price.toFixed(2) }}</p>
+          <p class="product-price">MAD{{ product.price.toFixed(2) }}</p>
 
           <p class="product-description">{{ product.description }}</p>
 

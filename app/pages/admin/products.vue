@@ -18,7 +18,7 @@
           <input v-model="newProduct.title" placeholder="e.g., iPhone 15 Pro Max Screen" required />
         </div>
         <div class="form-group">
-          <label>Price ($)</label>
+          <label>Price (MAD)</label>
           <input v-model="newProduct.price" type="number" step="0.01" placeholder="99.99" required />
         </div>
         <div class="form-group">
@@ -85,7 +85,7 @@
                 <span v-if="prod.category" class="category-badge">{{ prod.category.name }}</span>
                 <span v-else class="no-category">Uncategorized</span>
               </td>
-              <td class="price-cell">${{ prod.price.toFixed(2) }}</td>
+              <td class="price-cell">MAD{{ prod.price.toFixed(2) }}</td>
               <td class="cat-actions">
                 <button @click="deleteProduct(prod.id)" class="btn-delete" title="Delete Product">
                   <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none">

@@ -43,7 +43,7 @@
             <NuxtLink to="/contact" class="btn-primary mt-4">Book Tablet Repair</NuxtLink>
           </div>
           <div class="category-image glass-panel">
-            <div class="placeholder-img" style="background-image: url('/images/hero.png'); background-position: center;"></div>
+            <div class="placeholder-img" style="background-image: url('/images/tablet.png'); background-position: center;"></div>
           </div>
         </div>
 
